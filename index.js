@@ -62,21 +62,11 @@
 //     return password;
 // }
 
-// let base=5;
-// let height=5;
+let base=5;
+let height=5;
 
-// function area(base,height){
-//     console.log(base*height*0.5);
-// }
-// area(5,4);
-
-let price;
-
-function discount(price){
-    if(price>20){
-        price=price-0.2*price;
-    }
-    console.log(price);
+function area(base,height){
+    console.log(base*height*0.5);
 }
+area(5,4);
 
-discount(50);
