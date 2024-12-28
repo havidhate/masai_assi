@@ -61,3 +61,14 @@
 
 //     return password;
 // }
+
+let base=5;
+let height=5;
+
+function area(base,height){
+    console.log(base*height*0.5);
+}
+area(5,4);
+
+
+
