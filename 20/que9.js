@@ -1,10 +1,9 @@
 function setTimeoutGreeting(obj) {
-    setTimeout(() => {
-        console.log(`Hello, ${obj.name}`);
-    }, 1000);
+        const greet = function() {
+        console.log(`Hello, ${this.name}`);
+    }.bind(obj);
+    setTimeout(greet, 1000);
 }
-
 const person = { name: "Alice" };
-setTimeoutGreeting(person);
+setTimeoutGreeting(person); 
 
-// After 1 second, output: "Hello, Alice"
