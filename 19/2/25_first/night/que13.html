@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Propagation Demo</title>
+    <style>
+        .outer {
+            width: 300px; height: 300px;
+            background-color: lightcoral;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .middle {
+            width: 200px; height: 200px;
+            background-color: lightblue;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .inner {
+            width: 100px; height: 100px;
+            background-color: lightgreen;
+            display: flex; justify-content: center; align-items: center;
+        }
+        button {
+            padding: 10px; background: black; color: white; border: none; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="outer" id="outerDiv">
+        Outer Div
+        <div class="middle" id="middleDiv">
+            Middle Div
+            <div class="inner" id="innerDiv">
+                Inner Div
+                <button id="innerBtn">Click Me</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(event, elementName) {
+            alert(elementName + " clicked!");
+
+            // Log event phase: Bubbling (3) or Capturing (1)
+            console.log(elementName + " - Event Phase:", event.eventPhase);
+
+            // Stop event propagation if inner button is clicked
+            if (elementName === "Inner Button") {
+                event.stopPropagation();
+                console.log("Propagation Stopped at Inner Button!");
+            }
+        }
+
+        // Get elements
+        let outerDiv = document.getElementById("outerDiv");
+        let middleDiv = document.getElementById("middleDiv");
+        let innerDiv = document.getElementById("innerDiv");
+        let innerBtn = document.getElementById("innerBtn");
+
+        // Bubbling phase (default)
+        outerDiv.addEventListener("click", (event) => showAlert(event, "Outer Div"));
+        middleDiv.addEventListener("click", (event) => showAlert(event, "Middle Div"));
+        innerDiv.addEventListener("click", (event) => showAlert(event, "Inner Div"));
+        innerBtn.addEventListener("click", (event) => showAlert(event, "Inner Button"));
+
+        // Capturing phase (true as third parameter)
+        outerDiv.addEventListener("click", (event) => showAlert(event, "Outer Div (Capturing)"), true);
+        middleDiv.addEventListener("click", (event) => showAlert(event, "Middle Div (Capturing)"), true);
+        innerDiv.addEventListener("click", (event) => showAlert(event, "Inner Div (Capturing)"), true);
+    </script>
+
+</body>
+</html>
