@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="textarea">
+    <button onclick="addText()" id="add">Add</button>
+    <button onclick="clearBox()" id="clear">Clear</button>
+    <div id="box"></div>
+
+    <script>
+        function addText() {
+            let input = document.getElementById('textarea').value;
+            if (input.trim() === "") return; // Prevent adding empty text
+
+            let box = document.getElementById('box');
+            let paragraph = document.createElement("p"); // Create a new paragraph element
+            paragraph.textContent = input; // Set text content
+            box.appendChild(paragraph); // Append to the div
+
+            document.getElementById('textarea').value = ""; // Clear input field
+        }
+
+        function clearBox() {
+            document.getElementById('box').innerHTML = ""; // Clear all text inside the div
+        }
+    </script>
+</body>
+</html>
