@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .task-container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+            align-items: center;
+        }
+        .task button {
+            background: #dc3545;
+            width: auto;
+            padding: 5px;
+            font-size: 12px;
+        }
+        .task button.edit {
+            background: #ffc107;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Task Manager</h2>
+        <input type="text" id="taskTitle" placeholder="Enter Task Title">
+        <select id="taskStatus">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <button onclick="addTask()">Add Task</button>
+        <p id="message"></p>
+    </div>
+
+    <div class="task-container">
+        <h2>Tasks</h2>
+        <div id="taskList">Loading...</div>
+    </div>
+
+    <script>
+        const apiUrl = "https://mockapi.io/tasks";
+
+        // Fetch and display tasks
+        async function fetchTasks() {
+            try {
+                let response = await fetch(apiUrl);
+                let tasks = await response.json();
+                displayTasks(tasks);
+            } catch (error) {
+                document.getElementById("taskList").innerHTML = "<p class='error'>Failed to fetch tasks</p>";
+            }
+        }
+
+        // Display tasks in the list
+        function displayTasks(tasks) {
+            let taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+            tasks.forEach(task => {
+                let div = document.createElement("div");
+                div.className = "task";
+                div.innerHTML = `
+                    <span>${task.title} - <strong>${task.status}</strong></span>
+                    <div>
+                        <button class="edit" onclick="editTask('${task.id}', '${task.title}', '${task.status}')">Edit</button>
+                        <button onclick="deleteTask('${task.id}')">Delete</button>
+                    </div>
+                `;
+                taskList.appendChild(div);
+            });
+        }
+
+        // Add a new task
+        async function addTask() {
+            let title = document.getElementById("taskTitle").value.trim();
+            let status = document.getElementById("taskStatus").value;
+            let message = document.getElementById("message");
+
+            if (!title) {
+                message.textContent = "Task title is required!";
+                message.style.color = "red";
+                return;
+            }
+
+            let newTask = { title, status };
+
+            try {
+                let response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newTask)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Task creation failed");
+                }
+
+                message.textContent = "Task added successfully!";
+                message.style.color = "green";
+
+                document.getElementById("taskTitle").value = "";
+
+                fetchTasks();
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "red";
+            }
+        }
+
+        // Edit a task
+        function editTask(id, oldTitle, oldStatus) {
+            let newTitle = prompt("Edit Task Title:", oldTitle);
+            let newStatus = prompt("Enter new status (Pending/Completed):", oldStatus);
+
+            if (!newTitle || !newStatus) return;
+
+            updateTask(id, newTitle, newStatus);
+        }
+
+        // Update task (PATCH)
+        async function updateTask(id, title, status) {
+            let message = document.getElementById("message");
+
+            let updatedTask = { title, status };
+
+            try {
+                let response = await fetch(`${apiUrl}/${id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedTask)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to update task");
+                }
+
+                message.textContent = "Task updated successfully!";
+                message.style.color = "green";
+
+                fetchTasks();
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "red";
+            }
+        }
+
+        // Delete a task
+        async function deleteTask(id) {
+            let confirmDelete = confirm("Are you sure you want to delete this task?");
+            if (!confirmDelete) return;
+
+            let message = document.getElementById("message");
+
+            try {
+                let response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+
+                if (!response.ok) {
+                    throw new Error("Failed to delete task");
+                }
+
+                message.textContent = "Task deleted successfully!";
+                message.style.color = "green";
+
+                fetchTasks();
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "red";
+            }
+        }
+
+        // Fetch tasks on page load
+        fetchTasks();
+    </script>
+
+</body>
+</html>
