@@ -1,0 +1,81 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            font-family: sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        input, button{
+            margin: 5px;
+            padding: 8px;
+        }
+        #movieList{
+            display: grid;
+            grid-template-columns: repeat(2,200px);
+            gap: 20px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <input type="text" id="name" placeholder="enter the movie">
+        <input type="text" id="year" placeholder="enter the year">
+        <input type="text" id="genre" placeholder="enter the genre">
+        <input type="text" id="image" placeholder="image url">
+        <button onclick="addMovie()">button</button>
+    </div>
+    <h3>Movie List</h3>
+    <div id="movielist"></div>
+    
+</body>
+</html>
+<script>
+    async function addMovie(){
+        let movie = {
+            name:document.getElementById("name").value,
+            year:document.getElementById("year").value,
+            genre:document.getElementById("genre").value,
+            image:document.getElementById("image").value
+        }
+        let res = await fetch("https://moviedatabase-795c8-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json",{
+            method: 'POST',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(movie)
+        })
+        document.getElementById('name').value = "";
+        document.getElementById('year').value = "";
+        document.getElementById('genre').value = "";
+        document.getElementById('image').value = "";
+    }
+
+    async function fetchMovie(){
+        let res = await fetch("https://moviedatabase-795c8-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json");
+        let data = await res.json();
+
+        let movielist = document.getElementById("movielist");
+        movielist.innerHTML = "";
+
+        let moviesArray = Object.entries(data).map(([id,movie])=>({id,...movie}));
+        moviesArray.forEach((movie)=>{
+            let movieCard = document.createElement('div');
+            movieCard.className = "movie-card";
+            movieCard.innerHTML = `
+               <img src="${mobie.image}" alt="${movie.name}">
+               <h4>${movie.name}</h4>
+               <p>${movie.genre}</p>
+               <button class="btn" onclick="del(movie.id)">Delete</button>
+            `;
+            movielist.appendChild(movieCard);
+        })
+    }
+    fetchMovie();
+</script> -->
+
+
