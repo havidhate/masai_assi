@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Image Slider with Throttling</h2>
+    <img id = "slider" src="https://picsum.photos/600/400?random" alt="Random image">
+    <p>Slide<span id ="slideNumber">1</span></p>
+    <button id="prevBtn">Previous</button>
+    <button id="nextBtn">Next</button>
+</body>
+</html>
+<script>
+    let slideNumber = 1;
+    let lastClickTime = 0;
+    let clickCount = 0;
+    const imgElement = document.getElementById("slider");
+    const slideNumberElement = document.getElementById("slideNumber");
+
+    function fetchNewImage(){
+        imgElement.src = `https://picsum.photos/600/400?random=${Math.random()}`;
+        slideNumberElement.textContent = slideNumber;
+    }
+
+    function handleNavigation(direction){
+        const currentTime = Date.now();
+
+        if(currentTime - lastClickTime < 1000){
+            clickCount++;
+            if(clickCount > 3){
+                alert("Chill chill, loading it");
+            }
+        }else{
+            clickCount = 0;
+        }
+        lastClickTime = currentTime;
+
+        if(direction === "next"){
+            slideNumber++;
+        }else if(direction === "prev" && slideNumber>1){
+            slideNumber--;
+        }
+        fetchNewImage();
+    }
+    document.getElementById("nextBtn").addEventListener("click",()=>handlenavigation("next"));
+    document.getElementById("prevBtn").addEventListener("click",()=>handleNavigation("prev"));
+
+</script>
