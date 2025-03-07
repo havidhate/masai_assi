@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rick and Morty Gallery</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #282c34;
+        color: white;
+        text-align: center;
+      }
+
+      header {
+        background-color: #20232a;
+        padding: 20px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+        justify-content: center;
+      }
+
+      .character-card {
+        background: #3c3f46;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+
+      .character-card:hover {
+        transform: scale(1.05);
+      }
+
+      .character-card img {
+        width: 100%;
+        border-radius: 10px;
+      }
+
+      .pagination {
+        margin: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        background-color: #61dafb;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      button:disabled {
+        background-color: #888;
+        cursor: not-allowed;
+      }
+
+      footer {
+        background-color: #20232a;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #clock {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Rick and Morty Characters</h1>
+    </header>
+
+    <main>
+      <div id="character-grid" class="grid-container"></div>
+      <div class="pagination">
+        <button id="prevBtn" disabled>Previous</button>
+        <button id="nextBtn">Next</button>
+      </div>
+    </main>
+
+    <footer>
+      <p id="clock"></p>
+    </footer>
+  </body>
+</html>
+<script>
+  const API_URL = "https://rickandmortyapi.com/api/character";
+  let currentPage = 1;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchCharacters(currentPage);
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      currentPage++;
+      fetchCharacters(currentPage);
+    });
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      currentPage--;
+      fetchCharacters(currentPage);
+    });
+  });
+
+  async function fetchCharacters(page) {
+    try {
+      const response = await fetch(`${API_URL}?page=${page}`);
+      const data = await response.json();
+
+      const characterGrid = document.getElementById("character-grid");
+      characterGrid.innerHTML = "";
+
+      data.results.slice(0, 6).forEach((character) => {
+        const charCard = document.createElement("div");
+        charCard.className = "character-card";
+        charCard.innerHTML = `
+                <a href="character.html?id=${character.id}" target="_blank">
+                    <img src="${character.image}" alt="${character.name}">
+                    <h2>${character.name}</h2>
+                    <p>${character.species}</p>
+                    <p>Status: ${character.status}</p>
+                </a>
+            `;
+        characterGrid.appendChild(charCard);
+      });
+
+      document.getElementById("prevBtn").disabled = page === 1;
+      document.getElementById("nextBtn").disabled = !data.info.next;
+    } catch (error) {
+      console.error("Error fetching characters:", error);
+    }
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    const dateString = now.toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    document.getElementById(
+      "clock"
+    ).textContent = `${timeString} ${dateString}`;
+  }
+</script>
