@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz app</title>
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      body {
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+      form {
+        border-radius: 20px;
+        display: grid;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        background-color: aqua;
+        padding: 15px;
+        margin: 5px;
+      }
+      input {
+        border-radius: 20px;
+        margin: 10px;
+        padding: 10px;
+      }
+      button {
+        width: 50%;
+        height: 25px;
+        font-size: 15px;
+        display: block;
+        margin: 10px auto;
+      }
+      select {
+        width: 50%;
+        padding: 10px;
+        display: block;
+        margin: 10px;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1>Quizz App</h1>
+      <div>
+        <form id="quizform">
+          <label>*Username</label>
+          <input type="text" placeholder="Username" required />
+          <label>Level of Quizz</label>
+          <select name="level" id="level" required>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+          <label>*Number of questions</label>
+          <input
+            type="number"
+            placeholder="Number of que."
+            value="5"
+            min="1"
+            max="20"
+            required
+          />
+          <button type="submit">Start Quiz</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  document
+    .getElementById("quizform")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      const selectedLevel = document.getElementById("level").value;
+      window.location.href = `quiz.html?level=${selectedLevel}`;
+    });
+</script>

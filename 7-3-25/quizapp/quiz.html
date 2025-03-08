@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <style>
+      * {
+        font-family: Arial, sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+      .quiz-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        width: 400px;
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 10px;
+      }
+      .question {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      button {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #next-btn {
+        margin-top: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h2>Quiz</h2>
+      <div id="question-container">
+        <p class="question">Loading question...</p>
+        <div class="options"></div>
+      </div>
+      <button id="next-btn">Next</button>
+    </div>
+
+    <script>
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+
+      const difficultyLevel = getQueryParam("level") || "medium"; // Default to medium if not set
+
+      const apiUrl = `https://opentdb.com/api.php?amount=5&difficulty=${difficultyLevel}&type=multiple`;
+
+      let currentQuestionIndex = 0;
+      let questions = [];
+
+      async function fetchQuestions() {
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          if (!data.results || data.results.length === 0) {
+            document.getElementById("question-container").innerHTML =
+              "<p>Failed to load questions. Try again.</p>";
+            return;
+          }
+
+          questions = data.results;
+          displayQuestion();
+        } catch (error) {
+          console.error("Error fetching questions:", error);
+          document.getElementById("question-container").innerHTML =
+            "<p>Error loading questions.</p>";
+        }
+      }
+
+      function displayQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+          document.getElementById("question-container").innerHTML =
+            "<p>Quiz Completed!</p>";
+          document.getElementById("next-btn").style.display = "none";
+          return;
+        }
+
+        const questionData = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById("question-container");
+        questionContainer.innerHTML = `<p class="question">${questionData.question}</p>`;
+
+        const optionsContainer = document.createElement("div");
+        optionsContainer.classList.add("options");
+
+        let options = [
+          ...questionData.incorrect_answers,
+          questionData.correct_answer,
+        ];
+        options = options.sort(() => Math.random() - 0.5); // Shuffle answers
+
+        options.forEach((option) => {
+          const button = document.createElement("button");
+          button.innerText = option;
+          button.onclick = () =>
+            checkAnswer(option, questionData.correct_answer);
+          optionsContainer.appendChild(button);
+        });
+
+        questionContainer.appendChild(optionsContainer);
+      }
+
+      function checkAnswer(selected, correct) {
+        if (selected === correct) {
+          alert("Correct!");
+        } else {
+          alert("Wrong! The correct answer is: " + correct);
+        }
+        document.getElementById("next-btn").style.display = "block";
+      }
+
+      document.getElementById("next-btn").addEventListener("click", () => {
+        currentQuestionIndex++;
+        displayQuestion();
+        document.getElementById("next-btn").style.display = "none";
+      });
+
+      fetchQuestions();
+    </script>
+  </body>
+</html>
