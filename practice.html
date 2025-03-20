@@ -1,123 +1,132 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        body{
-            font-family: sans-serif;
-            text-align: center;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        input, button{
-            margin: 5px;
-            padding: 8px;
-        }
-        #movieList{
-            display: grid;
-            grid-template-columns: repeat(2,200px);
-            gap: 20px;
-            justify-content: center;
-        }
-    </style>
-</head>
-<body>
-    <div id="box">
-        <input type="text" id="name" placeholder="enter the movie">
-        <input type="text" id="year" placeholder="enter the year">
-        <input type="text" id="genre" placeholder="enter the genre">
-        <input type="text" id="image" placeholder="image url">
-        <button onclick="addMovie()">button</button>
-    </div>
-    <h3>Movie List</h3>
-    <div id="movielist"></div>
-    
-</body>
-</html>
-<script>
-    async function addMovie(){
-        let movie = {
-            name:document.getElementById("name").value,
-            year:document.getElementById("year").value,
-            genre:document.getElementById("genre").value,
-            image:document.getElementById("image").value
-        }
-        let res = await fetch("https://moviedatabase-795c8-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json",{
-            method: 'POST',
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(movie)
-        })
-        document.getElementById('name').value = "";
-        document.getElementById('year').value = "";
-        document.getElementById('genre').value = "";
-        document.getElementById('image').value = "";
-    }
-
-    async function fetchMovie(){
-        let res = await fetch("https://moviedatabase-795c8-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json");
-        let data = await res.json();
-
-        let movielist = document.getElementById("movielist");
-        movielist.innerHTML = "";
-
-        let moviesArray = Object.entries(data).map(([id,movie])=>({id,...movie}));
-        moviesArray.forEach((movie)=>{
-            let movieCard = document.createElement('div');
-            movieCard.className = "movie-card";
-            movieCard.innerHTML = `
-               <img src="${mobie.image}" alt="${movie.name}">
-               <h4>${movie.name}</h4>
-               <p>${movie.genre}</p>
-               <button class="btn" onclick="del(movie.id)">Delete</button>
-            `;
-            movielist.appendChild(movieCard);
-        })
-    }
-    fetchMovie();
-</script> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Firebase Authentication</h2>
-
-    <div id="signup-container">
-        <h3>Sign Up</h3>
-        
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      #quiz-container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .option {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        background: #ddd;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .correct {
+        background: green;
+        color: white;
+      }
+      .wrong {
+        background: red;
+        color: white;
+      }
+      #next-btn {
+        margin-top: 15px;
+        padding: 10px;
+        background: blue;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <h2 id="question">Loading...</h2>
+      <div id="options"></div>
+      <button id="next-btn">Next</button>
+      <h3 id="score">Score: 0</h3>
     </div>
 
+    <script>
+      let questions = [];
+      let currentQueIndex = 0;
+      let score = 0;
 
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyBc9X9Yh3deQZj9nENX-IOpKheg9SuuutI",
-          authDomain: "auth-10033.firebaseapp.com",
-          projectId: "auth-10033",
-          storageBucket: "auth-10033.firebasestorage.app",
-          messagingSenderId: "484012826808",
-          appId: "1:484012826808:web:81ee138ed0315390bf544d",
-          measurementId: "G-ZDC2YTZ2TL"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-      </script>
-</body>
+      async function fetchdata() {
+        let res = await fetch(
+          "https://opentdb.com/api.php?amount=5&type=multiple"
+        );
+        let data = await res.json();
+        questions = data.results; // Assign data to global questions array
+        loadque();
+      }
+
+      function loadque() {
+        let questionObj = questions[currentQueIndex];
+        let questionEl = document.getElementById("question");
+        let optionEl = document.getElementById("options");
+        let nextBtn = document.getElementById("next-btn");
+
+        questionEl.innerHTML = questionObj.question;
+        optionEl.innerHTML = "";
+
+        let answers = [
+          ...questionObj.incorrect_answers,
+          questionObj.correct_answer,
+        ];
+        answers.sort(() => Math.random() - 0.5); // Shuffle options
+
+        answers.forEach((answer) => {
+          let button = document.createElement("button");
+          button.classList.add("option");
+          button.innerHTML = answer;
+          button.addEventListener("click", () =>
+            checkAnswer(answer, questionObj.correct_answer)
+          );
+          optionEl.appendChild(button);
+        });
+
+        nextBtn.style.display = "none";
+      }
+
+      function checkAnswer(selected, correct) {
+        let options = document.querySelectorAll(".option");
+        options.forEach((button) => {
+          button.disabled = true;
+          if (button.innerHTML === correct) {
+            button.classList.add("correct");
+          } else if (button.innerHTML === selected) {
+            button.classList.add("wrong");
+          }
+        });
+
+        if (selected === correct) {
+          score++;
+          document.getElementById("score").innerText = "Score: " + score;
+        }
+
+        document.getElementById("next-btn").style.display = "block";
+      }
+
+      document.getElementById("next-btn").addEventListener("click", () => {
+        currentQueIndex++;
+
+        if (currentQueIndex < questions.length) {
+          loadque();
+        } else {
+          document.getElementById(
+            "quiz-container"
+          ).innerHTML = `<h2>Quiz Completed!</h2><h3>Final Score: ${score}</h3>`;
+        }
+      });
+
+      fetchdata();
+    </script>
+  </body>
 </html>
-    

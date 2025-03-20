@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
+      #weather-container {
+        max-width: 400px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      input {
+        padding: 10px;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px;
+        background: blue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #weather-info {
+        margin-top: 20px;
+      }
+      img {
+        width: 80px;
+        height: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="weather-container">
+      <h2>Weather App</h2>
+      <input type="text" id="city-input" placeholder="Enter city name" />
+      <button onclick="getWeather()">Search</button>
+      <div id="weather-info"></div>
+    </div>
+
+    <script>
+      async function getWeather() {
+        let city = document.getElementById("city-input").value.trim();
+        let apiKey = api;
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        if (!city) {
+          alert("Please enter a city name!");
+          return;
+        }
+
+        try {
+          let res = await fetch(url);
+          if (!res.ok) {
+            throw new Error("City not found");
+          }
+
+          let data = await res.json();
+          displayWeather(data);
+        } catch (error) {
+          document.getElementById(
+            "weather-info"
+          ).innerHTML = `<p style="color:red;">${error.message}</p>`;
+        }
+      }
+
+      function displayWeather(data) {
+        let weatherInfo = document.getElementById("weather-info");
+        weatherInfo.innerHTML = `
+                <h3>${data.name}, ${data.sys.country}</h3>
+                <p>Temperature: ${data.main.temp}°C</p>
+                <p>Humidity: ${data.main.humidity}%</p>
+                <p>Wind Speed: ${data.wind.speed} m/s</p>
+                <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="${data.weather[0].description}">
+                <p>${data.weather[0].description}</p>
+            `;
+      }
+    </script>
+  </body>
+</html>

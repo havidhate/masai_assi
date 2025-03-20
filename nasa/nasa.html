@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NASA ROVER</title>
+    <style>
+      body {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+      }
+
+      #container {
+        display: flex; /* Enables flexbox */
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center elements */
+        gap: 15px; /* Space between elements */
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      select,
+      input {
+        width: 200px; /* Adjust width */
+        padding: 8px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <select id="select">
+        <option value="FHAZ">FHAZ</option>
+        <option value="NAVCAM">NAVCAM</option>
+        <option value="MAST">MAST</option>
+      </select>
+
+      <select id="sol">
+        <option value="1000">1000</option>
+        <option value="500">500</option>
+        <option value="100">100</option>
+      </select>
+
+      <label for="date">Enter the date</label>
+      <input type="date" id="date" required />
+      <button id="search" onClick="search()">Search</button>
+    </div>
+    <div id="photos"></div>
+
+    <script>
+      async function search() {
+        event.preventDefault();
+        let camera = document.getElementById("select").value;
+        let sol = document.getElementById("sol").value;
+        let date = document.getElementById("date").value;
+        if (!date) {
+          alert("please select a date");
+          return;
+        }
+        let url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${date}sol=${sol}&camera=${camera}&api_key=DGNX92edWCTPH39ChraGu5xcNPADGOakyJsO61lI`;
+        let res = await fetch(url);
+        let data = await res.json();
+
+        let photodiv = document.getElementById("photos").value;
+        photodiv.innerHTML = "";
+
+        if (data.photos.length === 0) {
+          photodiv.innerHTML = "<p>No photos are availbale for this date</p>";
+          return;
+        }
+
+        data.photos.slice(0, 3).forEach((photo) => {
+          let div = document.createElement("div");
+          div.src = photo.img_src;
+          div.alt = "Mars Rover Photo";
+          div.style.width = "300px";
+          div.style.margin = "100px";
+          photodiv.appendChild(div);
+        });
+      }
+    </script>
+  </body>
+</html>

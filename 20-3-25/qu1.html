@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: white;
+        color: black;
+      }
+      .dark-mode {
+        background-color: black;
+        color: white;
+      }
+      nav {
+        padding-top: 5px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button id="toggle">🔄</button>
+      <button id="btn" onclick="fetchdata()">Fetch</button>
+    </nav>
+    <section>
+      <ul id="list"></ul>
+    </section>
+    <footer></footer>
+    <script>
+      document.getElementById("toggle").addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("theme", dark);
+        } else {
+          localStorage.setItem("theme", "white");
+        }
+      });
+      window.onload = function () {
+        const savedtheme = localStorage.getItem("theme");
+        if (savedtheme === "dark") {
+          document.body.classList.add("dark-mode");
+        }
+      };
+
+      async function fetchdata() {
+        let res = await fetch("https://jsonplaceholder.typicode.com/posts");
+        let data = await res.json();
+
+        data.slice(0, 5).forEach((element) => {
+          let li = document.createElement("li");
+          li.innerHTML = `
+           <p>${element.userId}</p>
+           <p>${element.title}</p>
+            `;
+          let list = document.getElementById("list");
+          list.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>
