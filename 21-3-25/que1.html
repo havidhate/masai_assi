@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f4;
+        transition: background-color 0.3s ease;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 10px;
+        text-align: center;
+      }
+      .controls {
+        margin-bottom: 20px;
+      }
+      input,
+      select,
+      button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #ddd;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .pokemon-card {
+        border: 1px solid #ddd;
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .pokemon-card:hover {
+        transform: scale(1.05);
+      }
+      .pokemon-card img {
+        width: 100px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 60%;
+        margin: 10% auto;
+        position: relative;
+      }
+
+      /* Dark Theme */
+      .dark-theme {
+        background-color: #1e1e1e;
+        color: white;
+      }
+      .dark-theme .pokemon-card {
+        background: #333;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to Pokemon world!</h1>
+      <div class="controls">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search Pokemon ..."
+          onkeyup="searchPokemon()"
+        />
+        <select id="typefilter" onchange="filterByType(this.value)">
+          <option value="">filter by Type</option>
+          <option value="fire">Fire</option>
+          <option value="water">Water</option>
+          <option value="grass">Grass</option>
+          <option value="electric">Electric</option>
+          <option value="psychic">Psychic</option>
+        </select>
+        <button onclick="toggleTheme()">Toggle Theme</button>
+      </div>
+      <div id="pokemon-container" class="grid"></div>
+
+      <div id="pagination"></div>
+
+      <div id="modal" class="modal" onclick="closeModal()"></div>
+    </div>
+    <script>
+      let currentPage = 1;
+      const limit = 20;
+
+      // Fetch Pokémon Data
+      async function fetchPokemonData(limit = 20, offset = 0) {
+        const res = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
+        );
+        const data = await res.json();
+        const promises = data.results.map((pokemon) =>
+          fetchPokemonDetails(pokemon.url)
+        );
+        const pokemonData = await Promise.all(promises);
+        displayPokemon(pokemonData);
+      }
+
+      // Fetch detailed Pokémon data
+      async function fetchPokemonDetails(url) {
+        const res = await fetch(url);
+        return await res.json();
+      }
+
+      // Display Pokémon Cards
+      function displayPokemon(pokemonList) {
+        const container = document.getElementById("pokemon-container");
+        container.innerHTML = "";
+        pokemonList.forEach((pokemon) => {
+          container.innerHTML += `
+        <div class="pokemon-card" onclick="showDetails(${pokemon.id})">
+          <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+          <h3>${capitalize(pokemon.name)}</h3>
+          <p>ID: #${pokemon.id}</p>
+          <p>Type: ${pokemon.types
+            .map((type) => capitalize(type.type.name))
+            .join(", ")}</p>
+        </div>`;
+        });
+      }
+
+      // Show Pokémon Details
+      async function showDetails(id) {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const pokemon = await res.json();
+
+        // Fetch additional details
+        const speciesRes = await fetch(pokemon.species.url);
+        const speciesData = await speciesRes.json();
+        const habitat = speciesData.habitat
+          ? speciesData.habitat.name
+          : "Unknown";
+        const flavorText = speciesData.flavor_text_entries.find(
+          (entry) => entry.language.name === "en"
+        ).flavor_text;
+
+        document.getElementById("modal").innerHTML = `
+        <div class="modal-content">
+          <h2>${capitalize(pokemon.name)} (#${pokemon.id})</h2>
+          <img src="${pokemon.sprites.front_default}" />
+          <p><strong>Type:</strong> ${pokemon.types
+            .map((type) => capitalize(type.type.name))
+            .join(", ")}</p>
+          <p><strong>Height:</strong> ${pokemon.height / 10} m</p>
+          <p><strong>Weight:</strong> ${pokemon.weight / 10} kg</p>
+          <p><strong>Base Stats:</strong></p>
+          <ul>
+            ${pokemon.stats
+              .map(
+                (stat) =>
+                  `<li>${capitalize(stat.stat.name)}: ${stat.base_stat}</li>`
+              )
+              .join("")}
+          </ul>
+          <p><strong>Habitat:</strong> ${capitalize(habitat)}</p>
+          <p><strong>Description:</strong> ${flavorText}</p>
+          <button onclick="closeModal()">Close</button>
+        </div>
+      `;
+        document.getElementById("modal").style.display = "block";
+      }
+
+      // Close Modal
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      // Capitalize String
+      function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      // Search Pokémon by Name
+      async function searchPokemon() {
+        const searchTerm = document
+          .getElementById("search")
+          .value.toLowerCase();
+        const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1000");
+        const data = await res.json();
+        const filtered = data.results.filter((p) =>
+          p.name.includes(searchTerm)
+        );
+        const promises = filtered.map((pokemon) =>
+          fetchPokemonDetails(pokemon.url)
+        );
+        const pokemonData = await Promise.all(promises);
+        displayPokemon(pokemonData);
+      }
+
+      // Filter by Type
+      async function filterByType(type) {
+        if (type === "") {
+          fetchPokemonData(20, 0);
+          return;
+        }
+        const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+        const data = await res.json();
+        const filtered = data.pokemon.map((p) =>
+          fetchPokemonDetails(p.pokemon.url)
+        );
+        const results = await Promise.all(filtered);
+        displayPokemon(results);
+      }
+
+      // Pagination and Page Change
+      async function changePage(page) {
+        currentPage = page;
+        const offset = (currentPage - 1) * limit;
+        await fetchPokemonData(limit, offset);
+      }
+
+      // Create Pagination Buttons
+      function createPaginationButtons(totalPages) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+          pagination.innerHTML += `<button onclick="changePage(${i})">${i}</button>`;
+        }
+      }
+
+      // Theme Toggle
+      function toggleTheme() {
+        const theme = document.body.classList.toggle("dark-theme")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
+      }
+
+      // Load Theme on Page Load
+      window.onload = () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark-theme");
+        fetchPokemonData(20, 0);
+      };
+    </script>
+  </body>
+</html>
