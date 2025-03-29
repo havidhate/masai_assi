@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag and Drop</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
+      }
+
+      #draggable-items,
+      #drop-zone {
+        width: 200px;
+        padding: 15px;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        min-height: 150px;
+      }
+
+      #draggable-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .item {
+        padding: 10px;
+        background-color: #ffdd57;
+        border: 1px solid #ffcc00;
+        border-radius: 5px;
+        cursor: grab;
+      }
+
+      .item:active {
+        cursor: grabbing;
+      }
+
+      #drop-zone {
+        background-color: #e8f5e9;
+        transition: background-color 0.2s;
+      }
+
+      #drop-zone.over {
+        background-color: #c8e6c9;
+        border-color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Drag and Drop Demo</h2>
+
+    <div class="container">
+      <!-- Draggable Items Section -->
+      <div id="draggable-items">
+        <div class="item" draggable="true" id="item1">Item 1</div>
+        <div class="item" draggable="true" id="item2">Item 2</div>
+        <div class="item" draggable="true" id="item3">Item 3</div>
+      </div>
+
+      <!-- Drop Zone Section -->
+      <div id="drop-zone">
+        <h3>Drop Here</h3>
+      </div>
+    </div>
+
+    <script>
+      // Get draggable items and drop zone
+      const items = document.querySelectorAll(".item");
+      const dropZone = document.getElementById("drop-zone");
+
+      let draggedItem = null;
+
+      // Add dragstart event to each item
+      items.forEach((item) => {
+        item.addEventListener("dragstart", (e) => {
+          draggedItem = item;
+          setTimeout(() => (item.style.display = "none"), 0);
+        });
+
+        item.addEventListener("dragend", () => {
+          setTimeout(() => {
+            draggedItem.style.display = "block";
+            draggedItem = null;
+          }, 0);
+        });
+      });
+
+      // Drop zone events
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault(); // Allows the drop
+        dropZone.classList.add("over");
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("over");
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("over");
+
+        if (draggedItem) {
+          dropZone.appendChild(draggedItem);
+        }
+      });
+    </script>
+  </body>
+</html>

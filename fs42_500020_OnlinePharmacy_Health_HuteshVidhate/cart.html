@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cart - MyPharma</title>
+    <style>
+      /* General Body Styling */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        background-image: url("https://shipsy.io/wp-content/uploads/2023/03/imgonline-com-ua-CompressToSize-DVNWZKaED0enVW.jpg");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      /* Main Container */
+      #cart-container {
+        width: 80%;
+        max-width: 800px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      /* Cart Items Styling */
+      #cartItems {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .cart-item {
+        padding: 15px;
+        background-color: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        border-radius: 8px;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .cart-item img {
+        width: 60px;
+        border-radius: 5px;
+      }
+
+      /* Remove Button */
+      .remove-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .remove-btn:hover {
+        background-color: #d32f2f;
+      }
+
+      /* Navigation Buttons */
+      #backBtn,
+      #clearCartBtn,
+      #proceedToOrderBtn,
+      #backToDash {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      #backBtn:hover,
+      #clearCartBtn:hover,
+      #proceedToOrderBtn:hover,
+      #backToDash:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cart-container">
+      <h2>Your Cart 🛒</h2>
+      <div id="cartItems"></div>
+
+      <!-- Buttons for Navigation -->
+      <button id="backBtn">Back to Dashboard</button>
+      <button id="clearCartBtn">Clear Cart</button>
+      <button id="proceedToOrderBtn">Proceed to Order</button>
+    </div>
+
+    <script>
+      // Get cart items from localStorage
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      // Function to display cart items
+      function displayCart() {
+        const cartItems = document.getElementById("cartItems");
+        cartItems.innerHTML = "";
+
+        if (cart.length === 0) {
+          cartItems.innerHTML = `<p>Your cart is empty!</p>`;
+          proceedToOrderBtn.style.display = "none";
+          return;
+        }
+        proceedToOrderBtn.style.display = "block";
+        cart.forEach((item, index) => {
+          const cartItem = document.createElement("div");
+          cartItem.className = "cart-item";
+          cartItem.innerHTML = `
+            <div>
+              <h4>${item.title}</h4>
+              <p><strong>Price:</strong> ₹${item.price}</p>
+              <p><strong>Category:</strong> ${item.category}</p>
+            </div>
+            <img src="${item.image}" alt="${item.title}" />
+            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+          `;
+          cartItems.appendChild(cartItem);
+        });
+      }
+
+      // Remove item from cart
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+      }
+
+      // Clear the entire cart
+      document.getElementById("clearCartBtn").addEventListener("click", () => {
+        localStorage.removeItem("cart");
+        alert("Cart cleared successfully!");
+        window.location.href = "dashboard.html";
+      });
+
+      // Go back to dashboard
+      document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "dashboard.html";
+      });
+
+      document
+        .getElementById("proceedToOrderBtn")
+        .addEventListener("click", () => {
+          window.location.href = "order.html";
+        });
+
+      // Display cart on page load
+      displayCart();
+    </script>
+  </body>
+</html>

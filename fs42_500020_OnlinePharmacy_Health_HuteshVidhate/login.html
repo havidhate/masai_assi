@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      /* General Body Styling */
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url("https://img.freepik.com/free-vector/online-pharmacy-service_107791-2650.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        font-family: "Poppins", sans-serif;
+      }
+
+      /* Container Styling */
+      #container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 320px;
+        padding: 25px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      /* Container Hover Effect */
+      #container:hover {
+        transform: scale(1.03);
+      }
+
+      /* Heading Style */
+      h2 {
+        margin-bottom: 10px;
+        font-size: 1.8rem;
+        color: #333;
+        text-transform: uppercase;
+      }
+
+      /* Label Styles */
+      label {
+        text-align: left;
+        font-size: 0.9rem;
+        color: #333;
+        font-weight: 600;
+      }
+
+      /* Input Fields */
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        padding: 12px 15px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      /* Input Focus Effect */
+      input:focus {
+        outline: none;
+        border-color: #4caf50;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.8);
+      }
+
+      /* Button Styling */
+      #submitBtn,
+      #backToHomeBtn {
+        background: linear-gradient(to right, #4caf50, #00c853);
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Button Hover Effect */
+      #submitBtn:hover,
+      #backToHomeBtn:hover {
+        background: linear-gradient(to right, #45a049, #00b341);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.5);
+      }
+
+      /* Paragraph and Link Styling */
+      p {
+        margin: 10px 0;
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      /* Anchor Link Styling */
+      a {
+        text-decoration: none;
+        color: #4caf50;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      a:hover {
+        color: #45a049;
+        text-decoration: underline;
+      }
+
+      /* Back to Home Button */
+      #backToHomeBtn {
+        margin-top: 10px;
+        background: #ff6f00;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Hover Effect for Back to Home */
+      #backToHomeBtn:hover {
+        background: #ff8f00;
+      }
+
+      /* Dark Mode Theme */
+      .dark-mode {
+        background-color: #1a1a1a;
+        color: white;
+      }
+
+      /* Dark Mode Container */
+      .dark-mode #container {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Dark Mode Button */
+      .dark-mode #submitBtn,
+      .dark-mode #backToHomeBtn {
+        background: linear-gradient(to right, #f1c40f, #ff6f00);
+      }
+
+      .dark-mode h2,
+      .dark-mode label,
+      .dark-mode p {
+        color: white;
+      }
+
+      /* Media Queries for Responsiveness */
+      @media (max-width: 768px) {
+        #container {
+          width: 90%;
+          padding: 20px;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+          font-size: 0.9rem;
+        }
+
+        #submitBtn,
+        #backToHomeBtn {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h2 {
+          font-size: 1.3rem;
+        }
+
+        #container {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Container -->
+    <img
+      src="https://img.freepik.com/free-vector/online-pharmacy-service_107791-2650.jpg"
+      alt="background image"
+    />
+    <div id="container">
+      <h2>Login</h2>
+      <!-- Name Input -->
+      <label for="name">Enter your name:</label>
+      <input type="text" id="name" placeholder="Your Name" required />
+
+      <!-- Email Input -->
+      <label for="email">Enter your email:</label>
+      <input type="email" id="email" placeholder="Your Email" required />
+
+      <!-- Password Input -->
+      <label for="password">Enter your password:</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Your Password"
+        minlength="6"
+        autocomplete="current-password"
+        required
+      />
+
+      <!-- Submit Button -->
+      <button id="submitBtn">Submit</button>
+
+      <!-- Sign Up Link -->
+      <p>Don't have an account?</p>
+      <a href="signup.html">Sign Up</a>
+
+      <button id="backToHomeBtn">Go to Home</button>
+    </div>
+
+    <!-- Firebase SDK and JS -->
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUqaMlSpyytH9rbMueweY2jbkLFYYqVcg",
+        authDomain: "pharmacy-8c2c9.firebaseapp.com",
+        projectId: "pharmacy-8c2c9",
+        storageBucket: "pharmacy-8c2c9.appspot.com",
+        messagingSenderId: "398394222649",
+        appId: "1:398394222649:web:83a3ebbd1d6eaf080e85e8",
+        measurementId: "G-12JE6EL568",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Handle login
+      const submitBtn = document.getElementById("submitBtn");
+
+      submitBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // Get input values
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+          alert("Please enter valid email and password!");
+          return;
+        }
+
+        // Sign in with email and password
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Successful login
+            const user = userCredential.user;
+            alert(`Login successful! Welcome ${user.email}`);
+            window.location.href = "dashboard.html"; // Redirect to dashboard
+          })
+          .catch((error) => {
+            // Handle errors
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Error: ", errorCode, errorMessage);
+            alert(`Login failed: ${errorMessage}`);
+          });
+      });
+      document.getElementById("backToHomeBtn").addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

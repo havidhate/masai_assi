@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List Application</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 400px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #28a745;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #218838;
+      }
+      .task-list {
+        list-style: none;
+        padding: 0;
+      }
+      .task-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        cursor: grab;
+      }
+      .task-item.low {
+        border-left: 5px solid #28a745;
+      }
+      .task-item.medium {
+        border-left: 5px solid #ffc107;
+      }
+      .task-item.high {
+        border-left: 5px solid #dc3545;
+      }
+      .task-actions button {
+        margin-left: 5px;
+        padding: 5px 8px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .edit-btn {
+        background-color: #007bff;
+        color: white;
+      }
+      .delete-btn {
+        background-color: #dc3545;
+        color: white;
+      }
+      .filter-options {
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>📝 To-Do List</h2>
+      <input type="text" id="taskInput" placeholder="Add a new task" />
+      <select id="prioritySelect">
+        <option value="low">Low Priority</option>
+        <option value="medium">Medium Priority</option>
+        <option value="high">High Priority</option>
+      </select>
+      <button onclick="addTask()">Add Task</button>
+
+      <div class="filter-options">
+        <button onclick="filterTasks('all')">All</button>
+        <button onclick="filterTasks('completed')">Completed</button>
+        <button onclick="filterTasks('pending')">Pending</button>
+      </div>
+
+      <ul id="taskList" class="task-list"></ul>
+    </div>
+
+    <script>
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+      // ✅ Render tasks on page load
+      window.onload = () => {
+        renderTasks();
+      };
+
+      // 🎯 Add Task
+      function addTask() {
+        const taskText = document.getElementById("taskInput").value.trim();
+        const priority = document.getElementById("prioritySelect").value;
+        if (taskText === "") {
+          alert("Please enter a task.");
+          return;
+        }
+        const newTask = {
+          id: Date.now(),
+          text: taskText,
+          priority: priority,
+          completed: false,
+        };
+        tasks.push(newTask);
+        saveAndRender();
+        document.getElementById("taskInput").value = "";
+      }
+
+      // 🔄 Render Tasks
+      function renderTasks(filter = "all") {
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = "";
+        const filteredTasks = tasks.filter((task) => {
+          if (filter === "completed") return task.completed;
+          if (filter === "pending") return !task.completed;
+          return true;
+        });
+        filteredTasks.forEach((task) => {
+          const taskItem = document.createElement("li");
+          taskItem.className = `task-item ${task.priority}`;
+          taskItem.draggable = true;
+          taskItem.innerHTML = `
+                <span onclick="toggleComplete(${
+                  task.id
+                })" style="cursor:pointer; text-decoration:${
+            task.completed ? "line-through" : "none"
+          };">
+                    ${task.text} (${task.priority})
+                </span>
+                <div class="task-actions">
+                    <button class="edit-btn" onclick="editTask(${
+                      task.id
+                    })">Edit</button>
+                    <button class="delete-btn" onclick="deleteTask(${
+                      task.id
+                    })">Delete</button>
+                </div>
+            `;
+          taskItem.ondragstart = (e) => dragStart(e, task.id);
+          taskList.appendChild(taskItem);
+        });
+      }
+
+      // ✅ Save to Local Storage
+      function saveAndRender() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
+      }
+
+      // 🗑️ Delete Task
+      function deleteTask(id) {
+        tasks = tasks.filter((task) => task.id !== id);
+        saveAndRender();
+      }
+
+      // ✏️ Edit Task
+      function editTask(id) {
+        const task = tasks.find((task) => task.id === id);
+        const newText = prompt("Edit task:", task.text);
+        if (newText) {
+          task.text = newText;
+          saveAndRender();
+        }
+      }
+
+      // ✅ Toggle Completion
+      function toggleComplete(id) {
+        const task = tasks.find((task) => task.id === id);
+        task.completed = !task.completed;
+        saveAndRender();
+      }
+
+      // 📂 Filter Tasks
+      function filterTasks(filter) {
+        renderTasks(filter);
+      }
+
+      // 🪄 Drag and Drop Functionality
+      let draggedTaskId = null;
+
+      function dragStart(event, id) {
+        draggedTaskId = id;
+      }
+
+      document.getElementById("taskList").addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+
+      document.getElementById("taskList").addEventListener("drop", (e) => {
+        e.preventDefault();
+        const draggedTaskIndex = tasks.findIndex(
+          (task) => task.id === draggedTaskId
+        );
+        const targetIndex = Array.from(e.target.parentNode.children).indexOf(
+          e.target
+        );
+        if (draggedTaskIndex >= 0 && targetIndex >= 0) {
+          const draggedTask = tasks.splice(draggedTaskIndex, 1)[0];
+          tasks.splice(targetIndex, 0, draggedTask);
+          saveAndRender();
+        }
+      });
+    </script>
+  </body>
+</html>

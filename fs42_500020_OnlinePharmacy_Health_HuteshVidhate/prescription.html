@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Upload Prescription</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+        background-image: url("https://browntape.com/wp-content/uploads/2021/02/E-Pharmacy-Blog-Featured-Image1-1-2-1024x512.png");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #upload-container {
+        width: 400px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      #dropZone {
+        width: 100%;
+        height: 150px;
+        border: 2px dashed #4caf50;
+        border-radius: 8px;
+        background-color: #e8f5e9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      #dropZone p {
+        margin: 0;
+        color: #388e3c;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      #uploadBtn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #uploadBtn:hover {
+        background-color: #45a049;
+      }
+
+      #prescriptionPreview {
+        margin-top: 20px;
+      }
+
+      #backBtn {
+        margin-top: 15px;
+        padding: 8px 15px;
+        background-color: #2196f3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #backBtn:hover {
+        background-color: #1e88e5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="upload-container">
+      <h2>Upload Prescription 📄</h2>
+
+      <!-- Drop Zone for Drag-and-Drop -->
+      <div
+        id="dropZone"
+        onclick="document.getElementById('fileInput').click();"
+      >
+        <p>Drag & Drop your prescription here or click to upload</p>
+        <input type="file" id="fileInput" accept=".jpg, .jpeg, .png, .pdf" />
+      </div>
+
+      <!-- Upload Button -->
+      <button id="uploadBtn">Upload Prescription</button>
+
+      <!-- Preview Uploaded Prescription -->
+      <div id="prescriptionPreview"></div>
+
+      <!-- Back to Dashboard Button -->
+      <button id="backBtn">Back to Dashboard</button>
+    </div>
+
+    <script>
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const prescriptionPreview = document.getElementById(
+        "prescriptionPreview"
+      );
+
+      let uploadedFile = null;
+
+      // Handle Drag and Drop Events
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = "#388e3c";
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.style.borderColor = "#4caf50";
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = "#4caf50";
+        uploadedFile = e.dataTransfer.files[0];
+        showFilePreview(uploadedFile);
+      });
+
+      // Handle File Selection
+      fileInput.addEventListener("change", (e) => {
+        uploadedFile = e.target.files[0];
+        showFilePreview(uploadedFile);
+      });
+
+      // Show File Preview
+      function showFilePreview(file) {
+        if (!file) return;
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          if (file.type.startsWith("image")) {
+            prescriptionPreview.innerHTML = `
+              <p><strong>Selected Prescription:</strong></p>
+              <img src="${e.target.result}" alt="Prescription" width="100%" />
+            `;
+          } else if (file.type === "application/pdf") {
+            prescriptionPreview.innerHTML = `
+              <p><strong>Selected Prescription:</strong></p>
+              <iframe src="${e.target.result}" width="100%" height="200px"></iframe>
+            `;
+          } else {
+            alert("Invalid file type. Please upload an image or PDF.");
+            prescriptionPreview.innerHTML = "";
+          }
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      // Upload Prescription and Save to LocalStorage
+      uploadBtn.addEventListener("click", () => {
+        if (!uploadedFile) {
+          alert("Please upload a prescription before proceeding.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const prescriptionData = {
+            fileName: uploadedFile.name,
+            fileType: uploadedFile.type,
+            fileData: e.target.result,
+          };
+
+          // Save prescription to localStorage
+          localStorage.setItem(
+            "prescription",
+            JSON.stringify(prescriptionData)
+          );
+          alert("Prescription uploaded successfully!");
+          window.location.href = "dashboard.html";
+        };
+
+        reader.readAsDataURL(uploadedFile);
+      });
+
+      // Back to Dashboard
+      document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "dashboard.html";
+      });
+    </script>
+  </body>
+</html>

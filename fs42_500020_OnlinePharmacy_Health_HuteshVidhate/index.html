@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Pharmacy</title>
+    <style>
+      /* General Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", Arial, sans-serif;
+      }
+
+      /* Global Body Styles */
+      body {
+        background-color: #f3f6fd;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+      }
+
+      /* Background Image */
+      #background {
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_SCj5mecFDsokuTZy514_VXN9UMFo6q9Pfw&s");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: -1;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          background-size: contain; /* Ensures the image fits without cutting edges */
+          background-position: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          background-size: contain; /* Avoids stretching on very small devices */
+          background-position: center;
+          background-attachment: scroll; /* Allows scroll behavior for small screens */
+        }
+      }
+      /* Dark Mode Background */
+      .dark-mode #background {
+        background-image: none;
+        background-color: #1a1a1a;
+      }
+
+      /* Main Container */
+      #container {
+        text-align: center;
+        margin: 2rem auto;
+      }
+
+      /* Navigation Bar */
+      #nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 0.8rem 2rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Logo */
+      #nav img {
+        height: 50px;
+        border-radius: 50%;
+      }
+
+      /* Navbar Links */
+      #navbar {
+        list-style: none;
+        display: flex;
+      }
+
+      #navbar li {
+        margin-left: 20px;
+      }
+
+      #navbar li a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        padding: 8px 15px;
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      #navbar li a:hover {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      /* Dark Mode Toggle Button */
+      #toggle {
+        font-size: 1.5rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #4caf50;
+        transition: color 0.3s ease;
+      }
+
+      #toggle:hover {
+        color: #f1c40f;
+      }
+
+      /* Welcome Message */
+      #body {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #body h1 {
+        font-size: 3rem;
+        background: linear-gradient(to right, #4caf50, #00c853);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Footer Section */
+      .footer {
+        background-color: #1c1c1c;
+        color: #fff;
+        padding: 2rem 0;
+        margin-top: 2rem;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        flex-wrap: wrap;
+      }
+
+      /* Footer Sections */
+      .footer-section {
+        flex: 1;
+        margin: 1rem;
+        min-width: 250px;
+      }
+
+      .footer-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #4caf50;
+      }
+
+      /* Footer Text */
+      .footer-section p,
+      .footer-section ul,
+      .footer-section a {
+        color: #ccc;
+        font-size: 0.9rem;
+      }
+
+      /* Quick Links */
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-section ul li a {
+        text-decoration: none;
+        color: #ccc;
+        transition: color 0.3s ease;
+      }
+
+      .footer-section ul li a:hover {
+        color: #4caf50;
+      }
+
+      /* Social Icons */
+      .social-icons a {
+        margin-right: 10px;
+        display: inline-block;
+        transition: transform 0.3s;
+      }
+
+      .social-icons a:hover {
+        transform: scale(1.2);
+      }
+
+      /* Footer Bottom */
+      .footer-bottom {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 1px solid #444;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      /* Button and Link Effects */
+      button,
+      a {
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      /* Dark Mode Theme */
+      .dark-mode {
+        background-color: #1a1a1a;
+        color: #fff;
+      }
+
+      .dark-mode #nav {
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dark-mode #navbar li a {
+        color: white;
+      }
+
+      .dark-mode #navbar li a:hover {
+        background-color: #f1c40f;
+        color: black;
+      }
+
+      .dark-mode .footer {
+        background-color: #0f0f0f;
+        color: #ddd;
+      }
+
+      .dark-mode .footer-section a {
+        color: #bbb;
+      }
+
+      .dark-mode #body h1 {
+        background: linear-gradient(to right, #f1c40f, #ff6f00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        #nav {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 0.8rem 1rem;
+        }
+
+        #navbar {
+          flex-direction: column;
+          width: 100%;
+          margin-top: 0.5rem;
+        }
+
+        #navbar li {
+          margin: 5px 0;
+        }
+
+        .container {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          margin-bottom: 1.5rem;
+        }
+
+        #body h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Container -->
+    <div id="container">
+      <!-- Navigation Bar -->
+      <div id="nav">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSw_y6BpyKvu90Wo9A-Unreh4WSdlbpVN8WIw&s"
+          alt="logo"
+        />
+        <ul id="navbar">
+          <li><button id="toggle">☀</button></li>
+          <li><a href="#">Home</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="signup.html">SignUp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="body"><h1>welcome to your store</h1></div>
+    <div id="background"></div>
+    <!-- Footer Section -->
+    <footer class="footer">
+      <div class="container">
+        <!-- About Section -->
+        <div class="footer-section about">
+          <h3>About Us</h3>
+          <p>
+            MyPharma is a leading online pharmacy providing high-quality
+            medicines and healthcare products at affordable prices.
+          </p>
+          <div class="social-icons">
+            <a href="#"
+              ><img
+                src="https://img.icons8.com/ios-filled/50/ffffff/facebook.png"
+                alt="Facebook"
+            /></a>
+            <a href="#"
+              ><img
+                src="https://img.icons8.com/ios-filled/50/ffffff/twitter.png"
+                alt="Twitter"
+            /></a>
+            <a href="#"
+              ><img
+                src="https://img.icons8.com/ios-filled/50/ffffff/instagram.png"
+                alt="Instagram"
+            /></a>
+          </div>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="footer-section links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="footer-section contact">
+          <h3>Contact Us</h3>
+          <p><strong>Email:</strong> support@mypharma.com</p>
+          <p><strong>Phone:</strong> +91 7777777777</p>
+          <p><strong>Location:</strong> Pune, India</p>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p>&copy; 2025 MyPharma. All rights reserved.</p>
+      </div>
+    </footer>
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUqaMlSpyytH9rbMueweY2jbkLFYYqVcg",
+        authDomain: "pharmacy-8c2c9.firebaseapp.com",
+        projectId: "pharmacy-8c2c9",
+        storageBucket: "pharmacy-8c2c9.appspot.com",
+        messagingSenderId: "398394222649",
+        appId: "1:398394222649:web:83a3ebbd1d6eaf080e85e8",
+        measurementId: "G-12JE6EL568",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      document.getElementById("toggle").addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+      });
+    </script>
+  </body>
+</html>
