@@ -14,7 +14,7 @@ The goal is to build a modern, intuitive, and fully-responsive e-commerce platfo
 the project is about the online pharmacy,where customer can order the medicine,it take care of the following core functionality:
 1] medicine order
 2] prescription upload and
-3] some suggestions
+3] some suggestions/recommendations
 4] checkout and order tracking
 5] medical history
 
@@ -35,6 +35,7 @@ my-app/
 |--- login.html
 |---signup.html
 |--- recommendations.html
+|---product.html
 
 ## Video Walkthrough of the project
 
