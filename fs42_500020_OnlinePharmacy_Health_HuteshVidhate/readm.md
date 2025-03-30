@@ -115,3 +115,4 @@ List and provide a brief overview of the technologies used in the project.
 - html
 - css
 - javascript
+- firebase
