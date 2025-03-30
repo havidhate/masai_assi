@@ -40,9 +40,13 @@ my-app/
 
 Attach a very short video walkthough of all of the features [ 1 - 3 minutes ]
 
+https://drive.google.com/file/d/1uagRil5SAMApJ3anAhBk3eXn_z9zS6U_/view?usp=sharing
+
 ## Video Walkthrough of the codebase
 
 Attach a very short video walkthough of codebase [ 1 - 5 minutes ]
+
+https://drive.google.com/file/d/1I2obub8FMpgTk46R45eqyuhqbdRvbldx/view?usp=sharing
 
 ## Features
 
