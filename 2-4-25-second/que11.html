@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Toggle Button</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React & ReactDOM -->
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <!-- Babel (for JSX) -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      function ColorToggleButton() {
+        // State to track the button color
+        const [isBlue, setIsBlue] = useState(true);
+
+        // Function to toggle color
+        const toggleColor = () => {
+          setIsBlue(!isBlue);
+        };
+
+        return (
+          <button
+            onClick={toggleColor}
+            style={{
+              backgroundColor: isBlue ? "blue" : "red",
+              color: "white",
+              padding: "10px 20px",
+              fontSize: "16px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Color: {isBlue ? "Blue" : "Red"}
+          </button>
+        );
+      }
+
+      // Rendering the component
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<ColorToggleButton />);
+    </script>
+  </body>
+</html>
