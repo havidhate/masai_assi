@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 10px 0;
+}
+
+.navbar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar li {
+  margin: 0 15px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+}
+
+.page {
+  margin-top: 50px;
+  padding: 20px;
+  font-size: 24px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.home {
+  background-color: lightblue;
+}
+
+.about {
+  background-color: lightgreen;
+}
+
+.contact {
+  background-color: lightcoral;
+}
