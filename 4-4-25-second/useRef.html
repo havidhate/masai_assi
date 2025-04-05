@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uncontrolled Form Example</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React & ReactDOM -->
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <!-- Babel (for JSX) -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useRef } = React;
+
+      function UncontrolledForm() {
+        const inputRef = useRef(null); // Create ref for the input element
+
+        function handleSubmit(e) {
+          e.preventDefault(); // Prevent page reload
+          const inputValue = inputRef.current.value; // Get the value from the input
+          alert(`You entered: ${inputValue}`);
+          inputRef.current.value = ""; // Clear the input field
+        }
+
+        return (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              ref={inputRef}
+              placeholder="Enter something..."
+            />
+            <button type="submit">Submit</button>
+          </form>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<UncontrolledForm />);
+    </script>
+  </body>
+</html>
