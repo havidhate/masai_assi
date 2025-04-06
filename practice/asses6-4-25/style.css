@@ -1,0 +1,124 @@
+/* Global styles */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+.light {
+  background: #f9f9f9;
+  color: #222;
+}
+
+.dark {
+  background: #121212;
+  color: #f9f9f9;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Feedback Form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+input,
+textarea {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+/* Feedback List */
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Feedback Item */
+.feedback-item {
+  padding: 15px;
+  background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+  border-left: 6px solid #4caf50;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.feedback-item:hover {
+  transform: scale(1.02);
+}
+
+.feedback-item p {
+  margin: 4px 0;
+}
+
+.feedback-item .email {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Delete button */
+.feedback-item button {
+  background: #f44336;
+  margin-top: 10px;
+}
+
+.feedback-item button:hover {
+  background: #d32f2f;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.theme-toggle button {
+  padding: 8px 16px;
+  background: #2196f3;
+  color: white;
+}
+
+.theme-toggle button:hover {
+  background: #1976d2;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  form,
+  .feedback-item {
+    padding: 10px;
+  }
+}
